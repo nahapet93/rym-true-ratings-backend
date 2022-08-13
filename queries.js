@@ -29,6 +29,26 @@ const getRatingByRelease = (request, response) => {
     });
 };
 
+const getRatingsByReleases = (request, response) => {
+    const ids = request.params.id.split(',').map(Number);
+
+    pool.query('SELECT * FROM ratings WHERE release_id = ANY($1::int[])', [ids], (error, results) => {
+        if (error) {
+            throw error;
+        }
+
+        let res;
+
+        if (results.rows[0]) {
+            res = results.rows;
+        } else {
+            res = [{avg_rating: 0, rating_count: 0}];
+        }
+
+        response.status(200).json(res);
+    });
+};
+
 const setRatingByRelease = (request, response) => {
     const id = parseInt(request.params.id);
     const {trueRating, ratingCount} = request.body;
@@ -58,5 +78,6 @@ const setRatingByRelease = (request, response) => {
 
 module.exports = {
     getRatingByRelease,
+    getRatingsByReleases,
     setRatingByRelease
 };

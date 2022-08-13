@@ -12,6 +12,7 @@ app.use(cors({
 }));
 
 app.get('/release/:id', db.getRatingByRelease);
+app.get('/releases/:id', db.getRatingsByReleases);
 app.post('/release/:id', db.setRatingByRelease);
 
 app.listen(port, () => {
